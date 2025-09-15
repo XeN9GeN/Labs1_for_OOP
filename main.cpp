@@ -61,9 +61,15 @@ vector<int> minuselo(vector<int>& num1, vector<int>& num2) {
 		res.insert(res.begin(), diff);
 		
 	}
+
+	while (res.size() > 1 && res[0] == 0) {
+		res.erase(res.begin());
+	}
+
 	if (flag) {
 		res.insert(res.begin(), -1);//минус
 	}
+
 
 	return res;
 }
