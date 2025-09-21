@@ -1,9 +1,10 @@
 #pragma once
-#include<vector>;
+#include<vector>
 
 class BigInt
 {
 	std::vector<int> digits;
+	bool is_negative;
 
 public:
 	BigInt(int n) {
