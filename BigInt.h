@@ -4,20 +4,30 @@
 class BigInt
 {
 	std::vector<int> digits;
-	long size=0;
 
 public:
 	BigInt(int n) {
-		int temp1 = n;
+		int temp = n;
 
-		while (temp1 != 0) {
-			digits.insert(digits.begin(), temp1 % 10);
-			size++;
-			temp1 /= 10;
-		}				 
+		while (temp != 0) {
+			digits.insert(digits.begin(), temp % 10);
+			temp /= 10;
+		}			
 	}
 	
-	BigInt(const std::vector<int>& d) : digits(d),size(d.size()) {}
+	long size() {
+		return digits.size();
+	}
+
+	void insertion(int value) {
+		digits.insert(digits.begin(), value);
+	}
+
+	int operator[](int i) {
+		return digits[i];
+	}
+
+	BigInt(const std::vector<int>& d) : digits(d) {}
 }; 
 
 
