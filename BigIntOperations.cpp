@@ -7,38 +7,121 @@
 
 using namespace std;
 
-
-BigInt op_plus(BigInt& a, BigInt& b) {
-	vector<int> res;
-	int cf = 0;
-
-	for (int i = a.size() - 1; i >= 0; i--) {
-		int sum = a[i] + b[i] + cf;
-		res.insert(res.begin(), sum % 10);
-		cf = sum / 10;
+int get_compare_sign(const BigInt& a, const BigInt& b) {
+	if (a > b) {
+		return 1;
 	}
-
-	if (cf > 0) {
-		res.insert(res.begin(), cf);
+	else {
+		return -1;
 	}
-
-	return BigInt(res);
 }
 
 
-BigInt op_minus(BigInt& a, BigInt& b) {
-	vector<int> res;
-	bool flag = false;
+BigInt BigIntOperations::op_plus(BigInt& a, BigInt& b) const{
+	if (a.get_sign() == 1 && b.get_sign() == 1) {
 
-	if (!compare_for_vector(a,b)) {
-		swap(a, b);
-		flag = true;
+		BigInt a_copy = a;
+		BigInt b_copy = b;
+		add_nulls(a_copy, b_copy, a_copy.size(), b_copy.size());
+
+		vector<int> res;
+		int cf = 0;
+
+		for (int i = a_copy.size() - 1; i >= 0; i--) {
+			int sum = a_copy[i] + b_copy[i] + cf;
+			res.insert(res.begin(), sum % 10);
+			cf = sum / 10;
+		}
+
+		if (cf > 0) {
+			res.insert(res.begin(), cf);
+		}
+
+		while (res.size() > 1 && res[0] == 0) {
+			res.erase(res.begin());
+		}
+
+		return BigInt(res, 1);
 	}
 
+	
+	else if(a.get_sign() == -1 && b.get_sign() == -1){
+
+		BigInt a_copy = a;
+		BigInt b_copy = b;
+		add_nulls(a_copy, b_copy, a_copy.size(), b_copy.size());
+
+		vector<int> res;
+
+		int cf = 0;
+		for (int i = a_copy.size() - 1; i >= 0; i--) {
+			int sum = a_copy[i] + b_copy[i] + cf;
+			res.insert(res.begin(), sum % 10);
+			cf = sum / 10;
+		}
+
+		if (cf > 0) {
+			res.insert(res.begin(), cf);
+		}
+
+		while (res.size() > 1 && res[0] == 0) {
+			res.erase(res.begin());
+		}
+
+		return BigInt(res, -1);
+	}
+
+	
+	else if(a.get_sign()==1 && b.get_sign()==-1){
+		return op_minus(a,b);
+	}
+
+	else{
+		return op_minus(b,a);
+	}
+}
+
+
+BigInt BigIntOperations::op_minus(BigInt& a, BigInt& b) const {
+	BigInt a_copy = a;
+	BigInt b_copy = b;
+	add_nulls(a_copy, b_copy, a_copy.size(), b_copy.size());
+
+	
+	vector<int> res;
+	int res_sign;
+
+	if(a.get_sign()==-1 && b.get_sign()==1){
+		a_copy.set_sign(1);
+		BigInt temp = op_plus(a_copy,b_copy);
+		temp.set_sign(-1);
+		return temp;
+	}
+
+	if(a.get_sign()==1 && b.get_sign()==-1){
+		b_copy.set_sign(1);
+		return op_plus(a_copy,b_copy);
+	}
+
+	if(a.get_sign()==-1 && b.get_sign()==-1){
+		swap(a_copy, b_copy);
+		a_copy.set_sign(1);
+		b_copy.set_sign(1);
+	}
+	
+	if(get_compare_sign(a_copy, b_copy)==1){
+		res_sign = 1;
+	}
+	else{
+		res_sign = -1;
+		swap(a_copy, b_copy);
+	}
+
+
 	int cf = 0;
-	int s = a.size();
+	int s = a_copy.size();
 	for (int i = s - 1; i >= 0; i--) {
-		int diff = a[i] - b[i] - cf;
+		int diff = a_copy[i] - b_copy[i] - cf;
 		if (diff < 0) {
 			diff += 10;
 			cf = 1;
@@ -52,23 +135,25 @@ BigInt op_minus(BigInt& a, BigInt& b) {
 	while (res.size() > 1 && res[0] == 0) {
 		res.erase(res.begin());
 	}
-
-	if (flag) {
-		res.insert(res.begin(), -1);//минус
-	}
-	return BigInt(res);
+	
+	return BigInt(res,res_sign);
+	
 }
 
 
-BigInt op_mult(BigInt& a, BigInt& b) {
-	int n = a.size();
-	int m = b.size();
+BigInt BigIntOperations::op_mult(BigInt& a, BigInt& b) const {
+	BigInt a_copy = a;
+	BigInt b_copy = b;
+	int res_sign = get_compare_sign(a_copy, b_copy);
+
+	int n = a_copy.size();
+	int m = b_copy.size();
 	vector<int> res(n + m, 0);
 
 	for (int i = n - 1; i >= 0; i--) {
 		int c = 0;
 		for (int j = m - 1; j >= 0; j--) {
-			int sum = res[i + j + 1] + a[i] * b[j] + c;
+			int sum = res[i + j + 1] + a_copy[i] * b_copy[j] + c;
 			res[i + j + 1] =sum% 10;
 			c = sum / 10;
 		}
@@ -79,16 +164,20 @@ BigInt op_mult(BigInt& a, BigInt& b) {
 		res.erase(res.begin());
 	}
 	
-	return BigInt(res);
+	return BigInt(res,res_sign);
 }
 
 
-BigInt op_div(BigInt& a, BigInt& b) {
+BigInt BigIntOperations::op_div(BigInt& a, BigInt& b) const {
+	BigInt a_copy = a;
+	BigInt b_copy = b;
+
 	int count = 0;
-	while (compare_for_vector(a,b)) {
-		op_minus(a, b);
+	while (a_copy>=b_copy) {
+		op_minus(a_copy, b_copy);
 		count++;
 	}
 	
 	return BigInt(count);
 }
+
