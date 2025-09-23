@@ -20,12 +20,14 @@ int main() {
 
 	BigInt bignum1(num1);
 	BigInt bignum2(num2);
-	BigInt bignum3 = oper.op_plus(bignum1, bignum2);
-	BigInt bignum4 = oper.op_minus(bignum1, bignum2);
 
-	cout << "First number: " << bignum1 << endl;
+	BigInt bignum3 = oper.op_plus(bignum1, bignum2);
+	//BigInt bignumD = oper.op_div(bignum1, bignum2);
+
+	cout << "First number: " << bignum1 << endl;	
 	cout << "Second number: " << bignum2 << endl;
+	cout << "\n";
 	cout << "Sum: " << bignum3 << endl;
-	cout << "Difference: " << bignum4 << endl;
+	//cout << "Difference: " << bignumD << endl;
 	return 0;
 }

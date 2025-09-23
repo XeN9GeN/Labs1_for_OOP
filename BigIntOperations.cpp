@@ -135,6 +135,10 @@ BigInt BigIntOperations::op_minus(BigInt& a, BigInt& b) const {
 	while (res.size() > 1 && res[0] == 0) {
 		res.erase(res.begin());
 	}
+
+	if (res.size() == 1 && res[0] == 0) {
+		res_sign = 1;
+	}
 	
 	return BigInt(res,res_sign);
 	
@@ -144,40 +148,69 @@ BigInt BigIntOperations::op_minus(BigInt& a, BigInt& b) const {
 BigInt BigIntOperations::op_mult(BigInt& a, BigInt& b) const {
 	BigInt a_copy = a;
 	BigInt b_copy = b;
-	int res_sign = get_compare_sign(a_copy, b_copy);
 
 	int n = a_copy.size();
 	int m = b_copy.size();
 	vector<int> res(n + m, 0);
 
-	for (int i = n - 1; i >= 0; i--) {
-		int c = 0;
-		for (int j = m - 1; j >= 0; j--) {
-			int sum = res[i + j + 1] + a_copy[i] * b_copy[j] + c;
-			res[i + j + 1] =sum% 10;
-			c = sum / 10;
+	if ((a_copy.get_sign() == 1 && b_copy.get_sign() == 1)|| (a_copy.get_sign() == -1 && b_copy.get_sign() == -1)) {
+
+		for (int i = n - 1; i >= 0; i--) {
+			int c = 0;
+			for (int j = m - 1; j >= 0; j--) {
+				int sum = res[i + j + 1] + a_copy[i] * b_copy[j] + c;
+				res[i + j + 1] = sum % 10;
+				c = sum / 10;
+			}
+			res[i] += c;
 		}
-		res[i] += c;
+
+		while (res.size() > 1 && res[0] == 0) {
+			res.erase(res.begin());
+		}
+
+		return BigInt(res, 1);
 	}
 
-	while (res.size() > 1 && res[0] == 0) {
-		res.erase(res.begin());
+
+	else if ((a_copy.get_sign() == 1 && b_copy.get_sign() == -1) || (a_copy.get_sign() == -1 && b_copy.get_sign() == 1)) {
+		
+		for (int i = n - 1; i >= 0; i--) {
+			int c = 0;
+			for (int j = m - 1; j >= 0; j--) {
+				int sum = res[i + j + 1] + a_copy[i] * b_copy[j] + c;
+				res[i + j + 1] = sum % 10;
+				c = sum / 10;
+			}
+			res[i] += c;
+		}
+
+		while (res.size() > 1 && res[0] == 0) {
+			res.erase(res.begin());
+		}
+
+		return BigInt(res, -1);
 	}
-	
-	return BigInt(res,res_sign);
 }
 
 
 BigInt BigIntOperations::op_div(BigInt& a, BigInt& b) const {
 	BigInt a_copy = a;
 	BigInt b_copy = b;
+	if(a_copy<b_copy)
+		return 0;
 
-	int count = 0;
-	while (a_copy>=b_copy) {
-		op_minus(a_copy, b_copy);
-		count++;
+	int on = 1;
+	BigInt count(0);
+
+	while (a_copy >= b_copy) {
+		a_copy = op_minus(a_copy, b_copy);
+		cout <<"A cop: "<< a_copy << "\n";
+		
+		BigInt one(on);
+		count = op_plus(count, one);
+		cout << "C: "<< count << "\n";
 	}
-	
-	return BigInt(count);
+	return count;
 }
 

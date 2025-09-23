@@ -20,6 +20,12 @@ public:
 
 
 	BigInt(int n) {//под int
+		if (n == 0) {
+			digits.push_back(0);
+			sign = 1;
+			return;
+		}
+
 		if (n < 0) {
 			sign = -1;
 			n = -n;
@@ -46,6 +52,7 @@ public:
 			}
 		}
 	}
+
 	BigInt(const std::vector<int>& vec, int sgn) : digits(vec),sign(sgn) {
 		while (digits.size() > 1 && digits[0] == 0) {
 			digits.erase(digits.begin());
@@ -103,11 +110,11 @@ public:
 	}
 
 	friend bool operator<=(const BigInt& ai, const BigInt& bi) {
-		return (!(ai > bi) && !(ai == bi));
+		return (ai < bi) || (ai == bi);
 	}
 
 	friend bool operator>=(const BigInt& ai, const BigInt& bi) {
-		return (!(ai < bi) && !(ai == bi));
+		return (ai > bi) || (ai == bi);
 	}
 
 
