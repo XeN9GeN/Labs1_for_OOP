@@ -28,7 +28,9 @@ public:
 
 		if (n < 0) {
 			sign = -1;
-			n = -n;
+		}
+		else {
+			sign = 1;
 		}
 		
 		int temp = n;
@@ -75,25 +77,23 @@ public:
 
 
 	friend bool operator==(const BigInt& ai, const BigInt& bi) {
-		if (ai.digits.size() != bi.digits.size()) {
+		if (ai.digits.size() != bi.digits.size()) 
 			return false;
-		}
 
-		for (size_t i = 0; i < ai.digits.size(); ++i) {
-			if (ai.digits[i] != bi.digits[i]) {
+		for (size_t i = 0; i < ai.digits.size(); ++i)
+			if (ai.digits[i] != bi.digits[i]) 
 				return false;
-			}
-		}
+
 		return true;
 	}
 
-	friend bool operator>(const BigInt& ai, const BigInt& bi) {
-		if (ai.digits.size() > bi.digits.size()) return true;
-		if (ai.digits.size() < bi.digits.size()) return false;
+	friend bool operator>(const BigInt& a, const BigInt& b) {
+		if (a.digits.size() > b.digits.size()) return true;
+		if (a.digits.size() < b.digits.size()) return false;
 
-		for (size_t i = 0; i < ai.digits.size(); ++i) {
-			if (ai.digits[i] > bi.digits[i]) return true;
-			if (ai.digits[i] < bi.digits[i]) return false;
+		for (size_t i = 0; i < a.digits.size(); ++i) {
+			if (a.digits[i] > b.digits[i]) return true;
+			if (a.digits[i] < b.digits[i]) return false;
 		}
 		return false;
 	}
@@ -134,6 +134,7 @@ public:
 	void insertion(int n) {
 		digits.insert(digits.begin(), n);
 	}
+
 };
 
 #endif

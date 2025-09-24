@@ -4,5 +4,5 @@
 
 
 void add_nulls(BigInt& a, BigInt& b, int size1, int size2);
-
+//void big_int_abs(BigInt& b);
 #endif

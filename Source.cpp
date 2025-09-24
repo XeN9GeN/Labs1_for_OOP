@@ -21,13 +21,24 @@ int main() {
 	BigInt bignum1(num1);
 	BigInt bignum2(num2);
 
-	BigInt bignum3 = oper.op_plus(bignum1, bignum2);
-	//BigInt bignumD = oper.op_div(bignum1, bignum2);
+	if (bignum1 == bignum2)
+		cout << "Numbers are equal\n";
+	else if (bignum1 > bignum2)
+		cout << "First number is greater than second\n";
+	else if(bignum1 < bignum2)
+		cout << "Second number is greater than second\n";
+	else if(bignum1>=bignum2)
+		cout << "First number is greater than or equal to second\n";
+	else if (bignum1 <= bignum2)
+		cout << "Second number is greater than or equal to first\n";
+
+	//BigInt bignum3 = oper.op_mult(bignum1, bignum2);
+	//BigInt bignum4 = oper.op_div(bignum1, bignum2);
 
 	cout << "First number: " << bignum1 << endl;	
 	cout << "Second number: " << bignum2 << endl;
 	cout << "\n";
-	cout << "Sum: " << bignum3 << endl;
-	//cout << "Difference: " << bignumD << endl;
+	//cout << "Sum: " << bignum3 << endl;
+	//cout << "Diff: " << bignum4 << endl;
 	return 0;
 }

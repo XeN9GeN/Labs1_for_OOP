@@ -197,19 +197,19 @@ BigInt BigIntOperations::op_mult(BigInt& a, BigInt& b) const {
 BigInt BigIntOperations::op_div(BigInt& a, BigInt& b) const {
 	BigInt a_copy = a;
 	BigInt b_copy = b;
-	if(a_copy<b_copy)
+
+	
+
+	if (a_copy < b_copy)
 		return 0;
 
-	int on = 1;
 	BigInt count(0);
-
+	BigInt one(1);
+	//-15/5 15/-3 -15/-3
 	while (a_copy >= b_copy) {
 		a_copy = op_minus(a_copy, b_copy);
 		cout <<"A cop: "<< a_copy << "\n";
-		
-		BigInt one(on);
 		count = op_plus(count, one);
-		cout << "C: "<< count << "\n";
 	}
 	return count;
 }
