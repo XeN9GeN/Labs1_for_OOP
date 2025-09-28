@@ -77,11 +77,11 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& out, const BigInt& bi);
 
-	friend bool operator==(const BigInt& ai, const BigInt& bi);
+	friend bool operator==(const BigInt& a, const BigInt& b);
 	friend bool operator>(const BigInt& a, const BigInt& b);
-	friend bool operator<(const BigInt& ai, const BigInt& bi);
-	friend bool operator<=(const BigInt& ai, const BigInt& bi);
-	friend bool operator>=(const BigInt& ai, const BigInt& bi);
+	friend bool operator<(const BigInt& a, const BigInt& b);
+	friend bool operator<=(const BigInt& a, const BigInt& b);
+	friend bool operator>=(const BigInt& a, const BigInt& b);
 	
 	long size() const { return static_cast<long>(digits.size()); }
 	void insertion(int n) { digits.insert(digits.begin(), n); }

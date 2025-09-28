@@ -124,11 +124,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BigInt.h" />
-    <ClInclude Include="BigIntOperations.h" />
-    <ClInclude Include="BigIntCompare.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BigIntCompare.cpp" />
     <ClCompile Include="BigIntOperations.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
