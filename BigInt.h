@@ -4,6 +4,7 @@
 #include<string>
 #include <iostream>
 
+
 class BigInt
 {
 	std::vector<int> digits;
@@ -17,7 +18,6 @@ public:
 	void set_sign(int newSign) {
 		sign = newSign;
 	}
-
 
 	BigInt(int n) {//под int
 		if (n == 0) {
@@ -54,87 +54,40 @@ public:
 			}
 		}
 	}
-
 	BigInt(const std::vector<int>& vec, int sgn) : digits(vec),sign(sgn) {
 		while (digits.size() > 1 && digits[0] == 0) {
 			digits.erase(digits.begin());
 		}
 	}
 	
-
-
-	friend std::ostream& operator<<(std::ostream& out, const BigInt& bi) {
-		if (bi.sign == -1) {
-			out << '-';
-		}
-		
-		for (size_t i = 0; i < bi.digits.size(); ++i)
-			out << bi.digits[i];
-
-		return out;
-	}
-
-
-
-	friend bool operator==(const BigInt& ai, const BigInt& bi) {
-		if (ai.digits.size() != bi.digits.size()) 
-			return false;
-
-		for (size_t i = 0; i < ai.digits.size(); ++i)
-			if (ai.digits[i] != bi.digits[i]) 
-				return false;
-
-		return true;
-	}
-
-	friend bool operator>(const BigInt& a, const BigInt& b) {
-		if (a.digits.size() > b.digits.size()) return true;
-		if (a.digits.size() < b.digits.size()) return false;
-
-		for (size_t i = 0; i < a.digits.size(); ++i) {
-			if (a.digits[i] > b.digits[i]) return true;
-			if (a.digits[i] < b.digits[i]) return false;
-		}
-		return false;
-	}
-
-	friend bool operator<(const BigInt& ai, const BigInt& bi) {
-		if (ai.digits.size() < bi.digits.size()) return true;
-		if (ai.digits.size() > bi.digits.size()) return false;
-
-		for (size_t i = 0; i < ai.digits.size(); ++i) {
-			if (ai.digits[i] < bi.digits[i]) return true;
-			if (ai.digits[i] > bi.digits[i]) return false;
-		}
-		return false;
-	}
-
-	friend bool operator<=(const BigInt& ai, const BigInt& bi) {
-		return (ai < bi) || (ai == bi);
-	}
-
-	friend bool operator>=(const BigInt& ai, const BigInt& bi) {
-		return (ai > bi) || (ai == bi);
-	}
-
-
+	BigInt operator+(const BigInt& other) const;
+	BigInt operator-(const BigInt& other) const;
+	BigInt operator*(const BigInt& other) const;
+	BigInt operator/(const BigInt& other) const;
 	
-	long size() const {
-		return static_cast<long>(digits.size());
-	}
+	BigInt& operator++();//++a
+	BigInt& operator--();//--a
+	BigInt operator++(int);//a++
+	BigInt operator--(int);//a--
 
-	int operator[](int i) const {
-		return digits[i];
-	}
+	BigInt& operator+=(const BigInt& other);
+	BigInt& operator-=(const BigInt& other);
+	BigInt& operator*=(const BigInt& other);
+	BigInt& operator/=(const BigInt& other);
 
-	int& operator[](int i) {
-		return digits[i];
-	}
+	friend std::ostream& operator<<(std::ostream& out, const BigInt& bi);
 
-	void insertion(int n) {
-		digits.insert(digits.begin(), n);
-	}
+	friend bool operator==(const BigInt& ai, const BigInt& bi);
+	friend bool operator>(const BigInt& a, const BigInt& b);
+	friend bool operator<(const BigInt& ai, const BigInt& bi);
+	friend bool operator<=(const BigInt& ai, const BigInt& bi);
+	friend bool operator>=(const BigInt& ai, const BigInt& bi);
+	
+	long size() const { return static_cast<long>(digits.size()); }
+	void insertion(int n) { digits.insert(digits.begin(), n); }
 
+	int operator[](int i) const { return digits[i]; }
+	int& operator[](int i) { return digits[i]; }	
 };
 
 #endif
