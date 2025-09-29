@@ -4,7 +4,6 @@
 #include<string>
 #include <iostream>
 
-
 class BigInt
 {
 	std::vector<int> digits;
@@ -18,6 +17,7 @@ public:
 	void set_sign(int newSign) {
 		sign = newSign;
 	}
+
 
 	BigInt(int n) {//под int
 		if (n == 0) {
@@ -48,21 +48,13 @@ public:
 				sign = -1;
 			}
 
-			else if (ch >= '0' && ch <= '9') {
+			if (ch >= '0' && ch <= '9') {
 				digits.push_back(ch - '0');
 				f = true;
 			}
 		}
-		if(digits.empty()) {
-			digits.push_back(0);
-			sign = 1;
-		}
-		else {
-			while (digits.size() > 1 && digits[0] == 0) {
-				digits.erase(digits.begin());
-			}
-		}
 	}
+
 	BigInt(const std::vector<int>& vec, int sgn) : digits(vec),sign(sgn) {
 		while (digits.size() > 1 && digits[0] == 0) {
 			digits.erase(digits.begin());
@@ -70,72 +62,80 @@ public:
 	}
 	
 
-	BigInt operator+(const BigInt& other) const;
-	BigInt operator-(const BigInt& other) const;
-	BigInt operator*(const BigInt& other) const;
-	BigInt operator/(const BigInt& other) const;
-	
-	BigInt& operator=(const BigInt& other);
-	BigInt& operator+=(const BigInt& other);
-	BigInt& operator-=(const BigInt& other);
-	BigInt& operator*=(const BigInt& other);
-	BigInt& operator/=(const BigInt& other);
 
-	BigInt& operator++();//++a
-	BigInt& operator--();//--a
-	BigInt  operator++(int);//a++
-	BigInt  operator--(int);//a--
-	BigInt  operator-() const {
-		BigInt temp = *this;
-		if (temp != BigInt(0)) { temp.set_sign(-temp.get_sign()); }
-		return temp;
-	}
-	
-
-
-	friend bool operator==(const BigInt& a, const BigInt& b);
-	friend bool operator!=(const BigInt & a, const BigInt & b);
-	friend bool operator> (const BigInt& a, const BigInt& b);
-	friend bool operator< (const BigInt& a, const BigInt& b);
-	friend bool operator<=(const BigInt& a, const BigInt& b);
-	friend bool operator>=(const BigInt& a, const BigInt& b);
-	
-
-
-	long size() const { return static_cast<long>(digits.size()); }
-	void insertion(int n) { digits.insert(digits.begin(), n); }
-
-	friend std::ostream& operator<<(std::ostream& out, const BigInt& bi);
-	operator std::string() const {
-		std::string str;
-		if (sign == -1) {
-			str += '-';
+	friend std::ostream& operator<<(std::ostream& out, const BigInt& bi) {
+		if (bi.sign == -1) {
+			out << '-';
 		}
-		for (size_t i = 0; i < digits.size(); ++i) {
-			str += std::to_string(digits[i]);
-		}
-		return str;
+		
+		for (size_t i = 0; i < bi.digits.size(); ++i)
+			out << bi.digits[i];
+
+		return out;
 	}
 
-	int operator[](int i) const { return digits[i]; }
-	int& operator[](int i) { return digits[i]; }	
+
+
+	friend bool operator==(const BigInt& ai, const BigInt& bi) {
+		if (ai.digits.size() != bi.digits.size()) 
+			return false;
+
+		for (size_t i = 0; i < ai.digits.size(); ++i)
+			if (ai.digits[i] != bi.digits[i]) 
+				return false;
+
+		return true;
+	}
+
+	friend bool operator>(const BigInt& a, const BigInt& b) {
+		if (a.digits.size() > b.digits.size()) return true;
+		if (a.digits.size() < b.digits.size()) return false;
+
+		for (size_t i = 0; i < a.digits.size(); ++i) {
+			if (a.digits[i] > b.digits[i]) return true;
+			if (a.digits[i] < b.digits[i]) return false;
+		}
+		return false;
+	}
+
+	friend bool operator<(const BigInt& ai, const BigInt& bi) {
+		if (ai.digits.size() < bi.digits.size()) return true;
+		if (ai.digits.size() > bi.digits.size()) return false;
+
+		for (size_t i = 0; i < ai.digits.size(); ++i) {
+			if (ai.digits[i] < bi.digits[i]) return true;
+			if (ai.digits[i] > bi.digits[i]) return false;
+		}
+		return false;
+	}
+
+	friend bool operator<=(const BigInt& ai, const BigInt& bi) {
+		return (ai < bi) || (ai == bi);
+	}
+
+	friend bool operator>=(const BigInt& ai, const BigInt& bi) {
+		return (ai > bi) || (ai == bi);
+	}
+
+
+	
+	long size() const {
+		return static_cast<long>(digits.size());
+	}
+
+	int operator[](int i) const {
+		return digits[i];
+	}
+
+	int& operator[](int i) {
+		return digits[i];
+	}
+
+	void insertion(int n) {
+		digits.insert(digits.begin(), n);
+	}
+
 };
-
-
-BigInt operator+(int left, const BigInt& right);
-BigInt operator-(int left, const BigInt& right);
-BigInt operator*(int left, const BigInt& right);
-BigInt operator/(int left, const BigInt& right);
-
-bool operator==(int left, const BigInt& right);
-bool operator!=(int left, const BigInt& right);
-bool operator> (int left, const BigInt& right);
-bool operator< (int left, const BigInt& right);
-bool operator<=(int left, const BigInt& right);
-bool operator>=(int left, const BigInt& right);
-
-
-
 
 #endif
 
