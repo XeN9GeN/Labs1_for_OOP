@@ -21,12 +21,12 @@ void add_nulls(BigInt& a, BigInt& b, int size1, int size2) {
 	}
 }
 
-
+//BigInt (oper) int
 BigInt BigInt::operator+(const BigInt& other)const  {
-	if (this->get_sign() == 1 && other.get_sign() == 1) {
+		if (this->get_sign() == 1 && other.get_sign() == 1) {
 
-		BigInt a_copy = *this;
-		BigInt b_copy = other;
+			BigInt a_copy = *this;
+			BigInt b_copy = other;
 		add_nulls(a_copy, b_copy, a_copy.size(), b_copy.size());
 
 		vector<int> res;
@@ -230,7 +230,6 @@ BigInt BigInt::operator/(const BigInt& other) const {
 	return count;
 }
 
-
 BigInt& BigInt::operator=(const BigInt& other) {
 	if (this != &other) {
 		digits = other.digits;
@@ -251,10 +250,12 @@ BigInt& BigInt::operator*=(const BigInt& other) {
 	return *this;
 }
 BigInt& BigInt::operator/=(const BigInt& other) {
-	*this = *this * other;
+	if(other.size() == 1 && other[0] == 0) {
+		throw invalid_argument("Division by zero is not allowed.");
+	}
+	*this = *this / other;
 	return *this;
 }
-
 
 BigInt& BigInt::operator++() { //++a
 	*this = *this + BigInt(1);
@@ -264,47 +265,30 @@ BigInt& BigInt::operator--() {
 	*this = *this - BigInt(1);
 	return *this;
 }
-BigInt BigInt::operator++(int) { //a++
+BigInt  BigInt::operator++(int) { //a++
 	BigInt temp = *this;
 	*this = *this + BigInt(1);
 	return temp;
 }
-BigInt BigInt::operator--(int) {
+BigInt  BigInt::operator--(int) {
 	BigInt temp = *this;
 	*this = *this - BigInt(1);
 	return temp;
 }
 
 
-ostream& operator<<(ostream& out, const BigInt& bi) {
-	if (bi.sign == -1) {
-		out << '-';
-	}
-
-	for (size_t i = 0; i < bi.digits.size(); ++i)
-		out << bi.digits[i];
-
-	return out;
-}
-
-
 bool operator==(const BigInt&a, const BigInt& b) {
-	BigInt ai = a;
-	ai.set_sign(1);
-	BigInt bi = b;
-	bi.set_sign(1);
-
-	if (ai.digits.size() != bi.digits.size()) return false;
-
-	for (size_t i = 0; i < ai.digits.size(); ++i)
-		if (ai.digits[i] != bi.digits[i]) return false;
-
+	if (a.get_sign() != b.get_sign()) return false;
+	if (a.digits.size() != b.digits.size()) return false;
+	for (size_t i = 0; i < a.digits.size(); ++i) {
+		if (a.digits[i] != b.digits[i]) return false;
+	}
 	return true;
 }
-bool operator!= (const BigInt& a, const BigInt& b) {
+bool operator!=(const BigInt& a, const BigInt& b) {
 	return !(a == b);
 }
-bool operator>(const BigInt& a, const BigInt& b) {
+bool operator> (const BigInt& a, const BigInt& b) {
 	if (a.get_sign() == 1 && b.get_sign() == -1) return true;
 	if (a.get_sign() == -1 && b.get_sign() == 1) return false;
 
@@ -328,7 +312,7 @@ bool operator>(const BigInt& a, const BigInt& b) {
 	}
 	return false;
 }
-bool operator<(const BigInt& a, const BigInt& b) {
+bool operator< (const BigInt& a, const BigInt& b) {
 	if (a.get_sign() == -1 && b.get_sign() == 1) return true;
 	if (a.get_sign() == 1 && b.get_sign() == -1) return false;
 
@@ -357,4 +341,32 @@ bool operator<=(const BigInt& a, const BigInt& b) {
 }
 bool operator>=(const BigInt& a, const BigInt& b) {
 	return (a > b) || (a == b);
+}
+
+
+
+//int (oper) BigInt
+BigInt operator+(int n, const BigInt& bi) { return BigInt(n) + bi; }
+BigInt operator-(int n, const BigInt& bi) { return BigInt(n) - bi; }
+BigInt operator*(int n, const BigInt& bi) { return BigInt(n) * bi; }
+BigInt operator/(int n, const BigInt& bi) { return BigInt(n) / bi; }
+
+
+bool operator==(int n, const BigInt& bi) { return BigInt(n) == bi; }
+bool operator!=(int n, const BigInt& bi) { return BigInt(n) != bi; }
+bool operator> (int n, const BigInt& bi) { return BigInt(n) > bi; }
+bool operator< (int n, const BigInt& bi) { return BigInt(n) < bi; }
+bool operator<=(int n, const BigInt& bi) { return BigInt(n) <= bi; }
+bool operator>=(int n, const BigInt& bi) { return BigInt(n) >= bi; }
+
+
+ostream& operator<<(ostream& out, const BigInt& bi) {
+	if (bi.sign == -1) {
+		out << '-';
+	}
+
+	for (size_t i = 0; i < bi.digits.size(); ++i)
+		out << bi.digits[i];
+
+	return out;
 }
