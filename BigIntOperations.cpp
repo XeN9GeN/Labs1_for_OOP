@@ -21,6 +21,7 @@ void add_nulls(BigInt& a, BigInt& b, int size1, int size2) {
 	}
 }
 
+
 BigInt BigInt::operator+(const BigInt& other)const  {
 	if (this->get_sign() == 1 && other.get_sign() == 1) {
 
@@ -196,42 +197,64 @@ BigInt BigInt::operator*(const BigInt& other)const {
 		return BigInt(res, -1);
 	}
 }
-BigInt BigInt::operator/(const BigInt& other)const {
+BigInt BigInt::operator/(const BigInt& other) const {
+	if (other.size() == 1 && other[0] == 0) {
+		throw invalid_argument("Division by zero is not allowed.");
+	}
+
 	BigInt a_copy = *this;
 	BigInt b_copy = other;
 	BigInt count(0);
 	BigInt one(1);
-	bool f = true;
 
-	if (a_copy.get_sign() == 1 && b_copy.get_sign() == 1) {// 10/5
-		if (a_copy < b_copy) return 0;
+	int sign_a = a_copy.get_sign();
+	int sign_b = b_copy.get_sign();
+	int result_sign = (sign_a == sign_b) ? 1 : -1;
+
+	a_copy.set_sign(1);
+	b_copy.set_sign(1);
+
+	if (a_copy < b_copy) {
+		return 0;
 	}
-	if (a_copy.get_sign() == -1 && b_copy.get_sign() == -1) {// -10/-5
-		a_copy.set_sign(1);
-		b_copy.set_sign(1);
-		if (a_copy > b_copy){}
-		else return 0;
+	if (a_copy == b_copy) {
+		return BigInt(result_sign);
 	}
-	if (a_copy.get_sign() == -1 && b_copy.get_sign() == 1) {// -10/5
-		a_copy.set_sign(1);
-		if (a_copy > b_copy) { count.set_sign(-1); }
-		else return 0;
-	}
-	else { // 10/-2
-		b_copy.set_sign(1);
-		if (a_copy > b_copy) { count.set_sign(-1); }
-		else return 0;
-	}
-	
-	if (b_copy.size() == 1 && b_copy[0] == 0) throw invalid_argument("Division by zero is not allowed.");
-	if (a_copy == b_copy) return one;
 
 	while (a_copy >= b_copy) {
-		a_copy = a_copy-b_copy;
+		a_copy = a_copy - b_copy;
 		count = count + one;
 	}
+
+	count.set_sign(result_sign);
 	return count;
 }
+
+
+BigInt& BigInt::operator=(const BigInt& other) {
+	if (this != &other) {
+		digits = other.digits;
+		sign = other.sign;
+	}
+	return *this;
+}
+BigInt& BigInt::operator+=(const BigInt& other) {
+	*this = *this + other;
+	return *this;
+}
+BigInt& BigInt::operator-=(const BigInt& other) {
+	*this = *this - other;
+	return *this;
+}
+BigInt& BigInt::operator*=(const BigInt& other) {
+	*this = *this * other;
+	return *this;
+}
+BigInt& BigInt::operator/=(const BigInt& other) {
+	*this = *this * other;
+	return *this;
+}
+
 
 BigInt& BigInt::operator++() { //++a
 	*this = *this + BigInt(1);
@@ -252,22 +275,6 @@ BigInt BigInt::operator--(int) {
 	return temp;
 }
 
-BigInt& BigInt::operator+=(const BigInt& other) {
-	*this = *this + other;
-	return *this;
-}
-BigInt& BigInt::operator-=(const BigInt& other) {
-	*this = *this - other;
-	return *this;
-}
-BigInt& BigInt::operator*=(const BigInt& other) {
-	*this = *this * other;
-	return *this;
-}
-BigInt& BigInt::operator/=(const BigInt& other) {
-	*this = *this * other;
-	return *this;
-}
 
 ostream& operator<<(ostream& out, const BigInt& bi) {
 	if (bi.sign == -1) {
@@ -279,6 +286,7 @@ ostream& operator<<(ostream& out, const BigInt& bi) {
 
 	return out;
 }
+
 
 bool operator==(const BigInt&a, const BigInt& b) {
 	BigInt ai = a;
@@ -292,6 +300,9 @@ bool operator==(const BigInt&a, const BigInt& b) {
 		if (ai.digits[i] != bi.digits[i]) return false;
 
 	return true;
+}
+bool operator!= (const BigInt& a, const BigInt& b) {
+	return !(a == b);
 }
 bool operator>(const BigInt& a, const BigInt& b) {
 	if (a.get_sign() == 1 && b.get_sign() == -1) return true;

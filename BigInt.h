@@ -60,31 +60,45 @@ public:
 		}
 	}
 	
+
 	BigInt operator+(const BigInt& other) const;
 	BigInt operator-(const BigInt& other) const;
 	BigInt operator*(const BigInt& other) const;
 	BigInt operator/(const BigInt& other) const;
 	
+
 	BigInt& operator++();//++a
 	BigInt& operator--();//--a
 	BigInt operator++(int);//a++
 	BigInt operator--(int);//a--
+	BigInt operator-() const {
+		BigInt temp = *this;
+		if (temp != BigInt(0)) { temp.set_sign(-temp.get_sign()); }
+		return temp;
+	}
+	
 
+	BigInt& operator=(const BigInt& other);
 	BigInt& operator+=(const BigInt& other);
 	BigInt& operator-=(const BigInt& other);
 	BigInt& operator*=(const BigInt& other);
 	BigInt& operator/=(const BigInt& other);
 
+
 	friend std::ostream& operator<<(std::ostream& out, const BigInt& bi);
 
+
 	friend bool operator==(const BigInt& a, const BigInt& b);
+	friend bool operator!= (const BigInt & a, const BigInt & b);
 	friend bool operator>(const BigInt& a, const BigInt& b);
 	friend bool operator<(const BigInt& a, const BigInt& b);
 	friend bool operator<=(const BigInt& a, const BigInt& b);
 	friend bool operator>=(const BigInt& a, const BigInt& b);
 	
+
 	long size() const { return static_cast<long>(digits.size()); }
 	void insertion(int n) { digits.insert(digits.begin(), n); }
+
 
 	int operator[](int i) const { return digits[i]; }
 	int& operator[](int i) { return digits[i]; }	
